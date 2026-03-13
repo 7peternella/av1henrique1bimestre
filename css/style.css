@@ -146,6 +146,15 @@ button.success:hover{
 	background:rgba(40,167,69,0.06);
 }
 
+/* input de edição inline */
+.edit-input{
+	padding:8px 10px;
+	border:1px solid #e6e7eb;
+	border-radius:6px;
+	min-width:180px;
+	font-size:1rem;
+}
+
 /* acessibilidade e foco */
 button:focus,#input-tarefa:focus{box-shadow:0 0 0 3px rgba(34,197,94,0.12)}
 

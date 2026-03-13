@@ -22,13 +22,52 @@ function renderTarefas() {
   tarefas.forEach((tarefa, index) => {
     const li = document.createElement('li');
 
+    const actions = document.createElement('div');
+    actions.className = 'tarefa-actions';
+
+    // se estiver em modo de edição, mostra input + salvar/cancelar
+    if (tarefa.editing) {
+      const inputEdit = document.createElement('input');
+      inputEdit.type = 'text';
+      inputEdit.className = 'edit-input';
+      inputEdit.value = tarefa.text;
+
+      const btnSalvar = document.createElement('button');
+      btnSalvar.type = 'button';
+      btnSalvar.className = 'success';
+      btnSalvar.textContent = 'Salvar';
+      btnSalvar.addEventListener('click', () => {
+        const novoTexto = inputEdit.value.trim();
+        if (novoTexto === '') return; // não salva vazio
+        tarefas[index].text = novoTexto;
+        tarefas[index].editing = false;
+        renderTarefas();
+      });
+
+      const btnCancelar = document.createElement('button');
+      btnCancelar.type = 'button';
+      btnCancelar.className = 'secondary';
+      btnCancelar.textContent = 'Cancelar';
+      btnCancelar.addEventListener('click', () => {
+        tarefas[index].editing = false;
+        renderTarefas();
+      });
+
+      actions.appendChild(btnSalvar);
+      actions.appendChild(btnCancelar);
+
+      li.appendChild(inputEdit);
+      li.appendChild(actions);
+      listaTarefas.appendChild(li);
+      // foco no input
+      setTimeout(() => inputEdit.focus(), 0);
+      return;
+    }
+
     const span = document.createElement('span');
     span.className = 'tarefa-text';
     span.textContent = tarefa.text;
     if (tarefa.feito) span.classList.add('feito');
-
-    const actions = document.createElement('div');
-    actions.className = 'tarefa-actions';
 
     // botão concluir / desfazer
     const btnConcluir = document.createElement('button');
@@ -38,6 +77,16 @@ function renderTarefas() {
     btnConcluir.addEventListener('click', () => {
       // alterna o estado 'feito' e re-renderiza
       tarefas[index].feito = !tarefas[index].feito;
+      renderTarefas();
+    });
+
+    // botão editar (troca para modo edição)
+    const btnEditar = document.createElement('button');
+    btnEditar.type = 'button';
+    btnEditar.className = 'secondary';
+    btnEditar.textContent = 'Editar';
+    btnEditar.addEventListener('click', () => {
+      tarefas[index].editing = true;
       renderTarefas();
     });
 
@@ -52,6 +101,7 @@ function renderTarefas() {
     });
 
     actions.appendChild(btnConcluir);
+    actions.appendChild(btnEditar);
     actions.appendChild(btnExcluir);
 
     li.appendChild(span);
