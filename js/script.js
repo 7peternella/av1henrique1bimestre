@@ -1,3 +1,4 @@
+// agora cada tarefa é um objeto: { text: string, feito: boolean }
 const tarefas = [];
 
 // Seleção de elementos do DOM
@@ -17,22 +18,28 @@ function renderTarefas() {
   // limpa a lista
   listaTarefas.textContent = '';
 
-  // renderiza cada tarefa em uma estrutura clara:
-  // <li>
-  //   <span class="tarefa-text">texto</span>
-  //   <div class="tarefa-actions">
-  //     <button class="secondary">Excluir</button>
-  //   </div>
-  // </li>
+  // renderiza cada tarefa como objeto com botões de ação
   tarefas.forEach((tarefa, index) => {
     const li = document.createElement('li');
 
     const span = document.createElement('span');
     span.className = 'tarefa-text';
-    span.textContent = tarefa;
+    span.textContent = tarefa.text;
+    if (tarefa.feito) span.classList.add('feito');
 
     const actions = document.createElement('div');
     actions.className = 'tarefa-actions';
+
+    // botão concluir / desfazer
+    const btnConcluir = document.createElement('button');
+    btnConcluir.type = 'button';
+    btnConcluir.className = 'success';
+    btnConcluir.textContent = tarefa.feito ? 'Desfazer' : 'Concluir';
+    btnConcluir.addEventListener('click', () => {
+      // alterna o estado 'feito' e re-renderiza
+      tarefas[index].feito = !tarefas[index].feito;
+      renderTarefas();
+    });
 
     const btnExcluir = document.createElement('button');
     btnExcluir.type = 'button';
@@ -44,6 +51,7 @@ function renderTarefas() {
       renderTarefas();
     });
 
+    actions.appendChild(btnConcluir);
     actions.appendChild(btnExcluir);
 
     li.appendChild(span);
@@ -65,7 +73,7 @@ form.addEventListener('submit', function (e) {
   mensagemErro.textContent = '';
 
   // adiciona no array e atualiza a interface
-  tarefas.push(texto.trim());
+  tarefas.push({ text: texto.trim(), feito: false });
   renderTarefas();
 
   // limpa o input
