@@ -17,10 +17,37 @@ function renderTarefas() {
   // limpa a lista
   listaTarefas.textContent = '';
 
-  // renderiza cada tarefa
-  tarefas.forEach((tarefa) => {
+  // renderiza cada tarefa em uma estrutura clara:
+  // <li>
+  //   <span class="tarefa-text">texto</span>
+  //   <div class="tarefa-actions">
+  //     <button class="secondary">Excluir</button>
+  //   </div>
+  // </li>
+  tarefas.forEach((tarefa, index) => {
     const li = document.createElement('li');
-    li.textContent = tarefa;
+
+    const span = document.createElement('span');
+    span.className = 'tarefa-text';
+    span.textContent = tarefa;
+
+    const actions = document.createElement('div');
+    actions.className = 'tarefa-actions';
+
+    const btnExcluir = document.createElement('button');
+    btnExcluir.type = 'button';
+    btnExcluir.className = 'secondary';
+    btnExcluir.textContent = 'Excluir';
+    // ao clicar, remove a tarefa do array pelo índice e re-renderiza
+    btnExcluir.addEventListener('click', () => {
+      tarefas.splice(index, 1);
+      renderTarefas();
+    });
+
+    actions.appendChild(btnExcluir);
+
+    li.appendChild(span);
+    li.appendChild(actions);
     listaTarefas.appendChild(li);
   });
 }
